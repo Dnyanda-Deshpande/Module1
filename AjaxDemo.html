@@ -1,0 +1,49 @@
+<html>
+<body>
+<script>
+	var req;
+	function initRequest(url) {
+		if (window.XMLHttpRequest) {
+			req = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			isIE = true;
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	} 
+	function validateUserId() {
+		target = document.getElementById("userid");
+		var url = "http://10.102.55.87:8081/DemoAjax/validate?id=" + escape(target.value);
+		initRequest(url);
+		req.onreadystatechange = processRequest;
+		req.open("GET", url, true);
+		req.send(null);
+	}
+	function processRequest() {
+		if (req.readyState == 4) {
+			if (req.status == 200) {
+				var message =
+				req.responseXML.getElementsByTagName("valid")[0].childNodes[0].nodeValue;
+				setMessageUsingDOM(message);
+				}
+				else{
+					alert("Error "+req.statusText);
+				}
+		}
+	}
+	function setMessageUsingDOM(message) {
+		mdiv = document.getElementById("userIdMessage");
+		if (message == "false") {
+			mdiv.innerHTML = "<div style=\"color:red\">Invalid User Id</div>";
+		} else {
+			mdiv.innerHTML = "<div style=\"color:green\">Valid User Id</div>";
+		}
+	}
+</script>
+<input type="text"
+size="20"
+id="userid"
+name="id"
+onkeyup="validateUserId();">
+<div id="userIdMessage"></div>
+</body>
+</html>
